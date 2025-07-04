@@ -1,42 +1,35 @@
 package forohub.apiforo.controller;
 
+import forohub.apiforo.topico.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import forohub.apiforo.topico.DatosActualizacionTopico;
-import forohub.apiforo.topico.DatosRegistroTopico;
-import forohub.apiforo.topico.Topico;
-import forohub.apiforo.topico.TopicoRepository;
-import jakarta.validation.Valid;
-
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/topicos")
 public class TopicoController {
+
     @Autowired
     private TopicoRepository repository;
 
-    @Transactional
     @PostMapping
-    public void registrar(@RequestBody @Valid DatosRegistroTopico datos) {
-        repository.save(new Topico(datos));
+    @Transactional
+    public ResponseEntity registrar(@RequestBody @Valid DatosRegistroTopico datos, UriComponentsBuilder uriComponentsBuilder) {
+        var topico = new Topico(datos);
+        repository.save(topico);
+        var uri = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
+        return ResponseEntity.created(uri).body(new DatosDetalleTopico(topico));
     }
 
     @GetMapping
-    public ResponseEntity<Page<DatosRegistroTopico>> listar(@PageableDefault(size=10, sort={"fechaDeCreacion"}) Pageable paginacion) {
-        var page = repository.findAll(paginacion).map(DatosRegistroTopico::new);
+    public ResponseEntity<Page<DatosListaTopico>> listar(@PageableDefault(size = 10, sort = {"fechaDeCreacion"}) Pageable paginacion) {
+        var page = repository.findAll(paginacion).map(DatosListaTopico::new);
         return ResponseEntity.ok(page);
     }
 
@@ -47,18 +40,28 @@ public class TopicoController {
         if (topicoOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        topicoOptional.get().actualizarInformacion(datos);
-        return ResponseEntity.noContent().build();
+        var topico = topicoOptional.get();
+        topico.actualizarInformacion(datos);
+        return ResponseEntity.ok(new DatosDetalleTopico(topico));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity eliminar(@PathVariable Long id) {
-        var topicoOptional = repository.findById(id);
-        if (topicoOptional.isEmpty()) {
+        if (!repository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
         repository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity detallar(@PathVariable Long id) {
+        var topicoOptional = repository.findById(id);
+        if (topicoOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(new DatosDetalleTopico(topicoOptional.get()));
+    }
 }
+

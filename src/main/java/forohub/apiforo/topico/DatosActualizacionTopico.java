@@ -9,10 +9,8 @@ public record DatosActualizacionTopico(
 ) {
     public DatosActualizacionTopico(Topico topico) {
         this(
-            topico.getId(),
             topico.getTitulo(),
             topico.getMensaje(),
-            topico.getFechaDeCreacion(),
             topico.getAutor(),
             topico.getCurso()
         );
