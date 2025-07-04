@@ -1,4 +1,4 @@
-package forohub.apiforo.topico;
+package forohub.apiforo.domain.topico;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

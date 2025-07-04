@@ -1,4 +1,4 @@
-package forohub.apiforo.topico;
+package forohub.apiforo.domain.topico;
 import jakarta.validation.constraints.NotBlank;
 
 public record DatosRegistroTopico(
