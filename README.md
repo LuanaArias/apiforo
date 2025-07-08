@@ -77,5 +77,7 @@ Esta API implementa **autenticación con JWT** mediante `Spring Security`.
 - Maven
 
 ##👤 Autora
+
 Luana Arias Lavia
+
 📧 [luanaariaaas@gmail.com]
