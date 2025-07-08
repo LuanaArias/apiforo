@@ -67,6 +67,7 @@ Esta API implementa **autenticación con JWT** mediante `Spring Security`.
     "clave": "123456"
   }
   
+  
 ### 🛠️ Tecnologías utilizadas
 - Java 17
 - Spring Boot 3
@@ -75,6 +76,7 @@ Esta API implementa **autenticación con JWT** mediante `Spring Security`.
 - JWT (Auth0)
 - MySQL
 - Maven
+
 
 ## 👤 Autora
 
