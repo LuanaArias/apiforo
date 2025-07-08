@@ -68,7 +68,7 @@ Esta API implementa **autenticación con JWT** mediante `Spring Security`.
   }
   
   
-### 🛠️ Tecnologías utilizadas
+## 🛠️ Tecnologías utilizadas
 - Java 17
 - Spring Boot 3
 - Spring Data JPA
